@@ -1274,7 +1274,10 @@ export class App extends React.Component<{}, AppState> {
   }
 
   private saveDebounced = debounce(() => {
-    saveToLocalStorage(elements, this.state);
+    saveToLocalStorage(
+      elements.filter(({ type }) => type !== "selection"),
+      this.state
+    );
   }, 300);
 
   componentDidUpdate() {
