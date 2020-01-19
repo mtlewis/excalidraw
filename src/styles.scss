@@ -13,6 +13,11 @@ body {
   color: var(--text-color-primary);
 }
 
+html,
+body {
+  overflow: hidden;
+}
+
 .container {
   display: flex;
   position: fixed;
