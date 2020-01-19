@@ -215,7 +215,7 @@ export class App extends React.Component<{}, AppState> {
     document.addEventListener("cut", this.onCut);
 
     document.addEventListener("keydown", this.onKeyDown, false);
-    document.addEventListener("mousemove", this.getCurrentCursorPosition);
+    document.addEventListener("pointermove", this.getCurrentCursorPosition);
     window.addEventListener("resize", this.onResize, false);
 
     const { elements: newElements, appState } = restoreFromLocalStorage();
@@ -238,7 +238,7 @@ export class App extends React.Component<{}, AppState> {
 
     document.removeEventListener("keydown", this.onKeyDown, false);
     document.removeEventListener(
-      "mousemove",
+      "pointermove",
       this.getCurrentCursorPosition,
       false
     );
@@ -636,7 +636,7 @@ export class App extends React.Component<{}, AppState> {
               left: e.clientX
             });
           }}
-          onMouseDown={e => {
+          onPointerDown={e => {
             if (lastMouseUp !== null) {
               // Unfortunately, sometimes we don't get a mouseup after a mousedown,
               // this can happen when a contextual menu or alert is triggered. In order to avoid
@@ -647,7 +647,7 @@ export class App extends React.Component<{}, AppState> {
             // pan canvas on wheel button drag
             if (e.button === 1) {
               let { clientX: lastX, clientY: lastY } = e;
-              const onMouseMove = (e: MouseEvent) => {
+              const onPointerMove = (e: PointerEvent) => {
                 document.documentElement.style.cursor = `grabbing`;
                 let deltaX = lastX - e.clientX;
                 let deltaY = lastY - e.clientY;
@@ -658,16 +658,16 @@ export class App extends React.Component<{}, AppState> {
                   scrollY: state.scrollY - deltaY
                 }));
               };
-              const onMouseUp = (lastMouseUp = (e: MouseEvent) => {
+              const onPointerUp = (lastMouseUp = (e: MouseEvent) => {
                 lastMouseUp = null;
                 resetCursor();
-                window.removeEventListener("mousemove", onMouseMove);
-                window.removeEventListener("mouseup", onMouseUp);
+                window.removeEventListener("pointermove", onPointerMove);
+                window.removeEventListener("pointerup", onPointerUp);
               });
-              window.addEventListener("mousemove", onMouseMove, {
+              window.addEventListener("pointermove", onPointerMove, {
                 passive: true
               });
-              window.addEventListener("mouseup", onMouseUp);
+              window.addEventListener("pointerup", onPointerUp);
               return;
             }
 
@@ -825,7 +825,7 @@ export class App extends React.Component<{}, AppState> {
               lastY = e.clientY - CANVAS_WINDOW_OFFSET_TOP;
             }
 
-            const onMouseMove = (e: MouseEvent) => {
+            const onPointerMove = (e: MouseEvent) => {
               const target = e.target;
               if (!(target instanceof HTMLElement)) {
                 return;
@@ -991,7 +991,7 @@ export class App extends React.Component<{}, AppState> {
               this.forceUpdate();
             };
 
-            const onMouseUp = (e: MouseEvent) => {
+            const onPointerUp = (e: MouseEvent) => {
               const {
                 draggingElement,
                 resizingElement,
@@ -999,8 +999,8 @@ export class App extends React.Component<{}, AppState> {
               } = this.state;
 
               lastMouseUp = null;
-              window.removeEventListener("mousemove", onMouseMove);
-              window.removeEventListener("mouseup", onMouseUp);
+              window.removeEventListener("pointermove", onPointerMove);
+              window.removeEventListener("pointerup", onPointerUp);
 
               if (
                 elementType !== "selection" &&
@@ -1065,10 +1065,10 @@ export class App extends React.Component<{}, AppState> {
               this.forceUpdate();
             };
 
-            lastMouseUp = onMouseUp;
+            lastMouseUp = onPointerUp;
 
-            window.addEventListener("mousemove", onMouseMove);
-            window.addEventListener("mouseup", onMouseUp);
+            window.addEventListener("pointermove", onPointerMove);
+            window.addEventListener("pointerup", onPointerUp);
 
             // We don't want to save history on mouseDown, only on mouseUp when it's fully configured
             history.skipRecording();
@@ -1150,7 +1150,7 @@ export class App extends React.Component<{}, AppState> {
               }
             });
           }}
-          onMouseMove={e => {
+          onPointerMove={e => {
             const hasDeselectedButton = Boolean(e.buttons);
             if (hasDeselectedButton || this.state.elementType !== "selection") {
               return;
